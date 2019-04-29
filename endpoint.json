@@ -1,0 +1,330 @@
+{
+    "label": "Google Calendar",
+    "name": "google-calendar",
+    "apiVersion": "v1",
+    "internal": false,
+    "configurationType": "PER_USER",
+    "deployment": {
+        "profiles":[
+            {
+                "name": "default",
+                "label": "Default",
+                "memory": 512,
+                "offHeapMinFactor": 1.5,
+                "description": "Default configuration"
+            }
+        ],
+        "allowMultipleInstances": false
+    },
+    "icon48": "https://storage.googleapis.com/static.slingrs.io/platform/endpoints/google-calendar.png",
+    "configurationHelpUrl": "/endpoints_google_calendar.html#configuration",
+    "status": "ACTIVE",
+    "stores": [
+        {"name": "cal_sync"}
+    ],
+    "events": [
+        {
+            "label": "User connected",
+            "name": "userConnected",
+            "eventType": "PER_USER",
+            "description": "Event triggered when the current user is connected to Google Calendar service."
+        },
+        {
+            "label": "User disconnected",
+            "name": "userDisconnected",
+            "eventType": "PER_USER",
+            "description": "Event triggered when the current user is disconnected from Google Calendar service."
+        },
+        {
+            "label": "Event updated",
+            "name": "syncEventUpdated",
+            "eventType": "PER_USER",
+            "description": "Notification generated because an event was created or updated on the Google service side. Polling must be enabled to receive this kind of message."
+        },
+        {
+            "label": "Event deleted",
+            "name": "syncEventDeleted",
+            "eventType": "PER_USER",
+            "description": "Notification generated because an event was deleted on the Google service side. Polling must be enabled to receive this kind of message."
+        }
+    ],
+    "functions": [
+        {
+            "label": "Gets the authentication URL",
+            "name": "authenticationUrl",
+            "description": "Gets the URL to perform the authentication."
+        },
+        {
+            "label": "Connect User",
+            "name": "connectUser",
+            "functionType": "PER_USER",
+            "description": "Connects the user to the Google service.",
+            "callbacks": [
+                {
+                    "name": "userConnected",
+                    "maxWaitingTime": 60000,
+                    "maxExpectedResponses": 1
+                },
+                {
+                    "name": "userDisconnected",
+                    "maxWaitingTime": 60000,
+                    "maxExpectedResponses": 1
+                }
+            ]
+        },
+        {
+            "label": "Gets the user information",
+            "name": "getUserInformation",
+            "functionType": "PER_USER",
+            "description": "Gets the user information from Google service."
+        },
+        {
+            "label": "Find one calendar",
+            "name": "_findOneCalendar",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Gets the user's calendars",
+            "name": "_findCalendars",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Create a calendar",
+            "name": "_createCalendar",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Update a calendar",
+            "name": "_updateCalendar",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Delete a calendar",
+            "name": "_deleteCalendar",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Find one event",
+            "name": "_findOneEvent",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Returns events on the specified user's calendars",
+            "name": "_findEvents",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Create an event",
+            "name": "_createEvent",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Update an event",
+            "name": "_updateEvent",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Delete an event",
+            "name": "_deleteEvent",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "GET request",
+            "name": "_getRequest",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "POST request",
+            "name": "_postRequest",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "PUT request",
+            "name": "_putRequest",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "PATCH request",
+            "name": "_patchRequest",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "DELETE request",
+            "name": "_deleteRequest",
+            "functionType": "PER_USER"
+        },
+        {
+            "label": "Old function",
+            "name": "_oldFunction",
+            "functionType": "PER_USER"
+        }
+    ],
+    "scripts":[
+        "functions.js"
+    ],
+    "configuration":[
+        {
+            "name": "clientId",
+            "label": "Client ID",
+            "description": "Client ID assigned by Google for your application",
+            "type": "text",
+            "required": true
+        },
+        {
+            "name": "clientSecret",
+            "label": "Client secret",
+            "description": "Client secret generated by Google for your application",
+            "type": "text",
+            "required": true
+        },
+        {
+            "name": "clientType",
+            "label": "Client type",
+            "description": "This field determines what kind of URIs will be used on the client configuration on Google. Select 'Multi Application' when you want to use your application as a template in order to use the platform main domain. Valid values 'single', 'multi', and with placeholders ('Custom' option).",
+            "type": "buttonsGroup",
+            "required": true,
+            "defaultValue": "single",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"Single Application",
+                        "name":"single"
+                    },
+                    {
+                        "label":"Multi Application",
+                        "name":"multi"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "javascriptOrigin",
+            "label": "Javascript origin",
+            "description": "Javascript origin to register on your application",
+            "type": "label",
+            "value": "(!!config.LOCAL ? config.BASE_SERVER_URL : (!config.clientType || config.clientType == 'single' ? config.SERVER_URL : config.BASE_SERVER_URL))"
+        },
+        {
+            "name": "redirectUri",
+            "label": "Registered URI",
+            "description": "Redirect URI to register on your application",
+            "type": "label",
+            "value": "(!!config.LOCAL ? config.BASE_SERVER_URL : (!config.clientType || config.clientType == 'single' ? config.SERVER_URL : config.BASE_SERVER_URL))+'/callback'"
+        },
+        {
+            "name": "pollingEnabled",
+            "label": "Sync process",
+            "description": "If it is enabled, the synchronization process finds periodically events created, modified or deleted in the Google Calendar side. Each time that a change is found, the sync process sends an inbound message to the application. Valid values 'enable', 'disable', and with placeholders ('Custom' option).",
+            "type": "buttonsGroup",
+            "required": true,
+            "defaultValue": "disable",
+            "typeOptions": {
+                "allowCustom": true,
+                "possibleValues":[
+                    {
+                        "label":"Enable",
+                        "name":"enable"
+                    },
+                    {
+                        "label":"Disable",
+                        "name":"disable"
+                    }
+                ]
+            }
+        },
+        {
+            "name": "syncTime",
+            "label": "Sync Frequency",
+            "description": "Synchronization frequency in minutes. Must be greater than or equal to 5 min.",
+            "type": "text",
+            "defaultValue": "10",
+            "visibility": "config.pollingEnabled && config.pollingEnabled != 'disable'",
+            "typeOptions": {
+                "validation": {
+                    "function": "!config.syncTime || utils.isPlaceholder(config.syncTime) || utils.getInteger(config.syncTime) >= 5",
+                    "message": "The time must be a valid placeholder or a positive integer greater than or equal to 5 minutes. "
+                }
+            }
+        },
+        {
+            "name": "config1",
+            "label": "Configuration",
+            "type": "info",
+            "value": "You will need to configure the credentials in the Google Developer Console: <a href='https://console.developers.google.com' target='_blank'>https://console.developers.google.com</a>"
+        },
+        {
+            "name": "config2",
+            "label": "Credentials",
+            "type": "info",
+            "value": "Follow these points to generate a new credentials:<ul><li>Access to the Developer Console</li><li>Create a new project. Copy the 'Project Name' in the configuration form.</li><li>Access to 'APIs &amp; auth'->'APIs'. Enable the <b>Google Apps APIs->Calendar API</b></li><li>Access to 'APIs &amp; auth'->'Consent screen'. Complete the form as you prefer and save it.</li><li>Access to 'APIs &amp; auth'->'Credentials', then 'Create new Client ID'.</li><li>Choose what type of client do you want to use. This selection affects only the generated URIs for the 'Javascript Origin' and 'Registered URI' fields. The 'Single Application' option is appropriated for most application but if you want to share the same URIs accross all your SLINGR applications, select 'Multi Application'.</li><li>Select 'Web application' as 'Application Type' and add your domain as 'Authorized Javascript Origins' (per example 'https://appname.slingrs.io'). Push the 'Create Client ID' button.</li><li>Copy the 'Client ID', 'Client Secret' and 'Javascript Origin' in the configuration form.</li><li>Copy the 'Registered URI' value on the Developer Console.</li></ul>"
+        },
+        {
+            "name": "config3",
+            "label": "Custom domains",
+            "type": "info",
+            "value": "If the custom domains are enabled for the application, it is necessary to register the related 'javascript origin' and 'registered URI' ('https://<custom domain>' and 'https://<custom domain>/callback')"
+        }
+    ],
+    "userConfiguration":[
+        {
+            "name": "code",
+            "label": "Google code",
+            "description": "User code to generate token on Google services.",
+            "type": "text",
+            "visibility": false
+        },
+        {
+            "name": "redirectUri",
+            "label": "Redirect URI",
+            "description": "Redirect URI registered on Google services.",
+            "type": "text",
+            "visibility": false
+        },
+        {
+            "name": "name",
+            "label": "User name",
+            "description": "User name of the logged user on Google services.",
+            "type": "text",
+            "visibility": false
+        },
+        {
+            "name": "timezone",
+            "label": "Timezone",
+            "description": "Timezone configured for the user.",
+            "type": "label",
+            "value": "config.TIME_ZONE",
+            "visibility": false
+        },
+        {
+            "name": "picture",
+            "label": "User",
+            "description": "Logged user on Google services.",
+            "type": "image",
+            "showLabel": false,
+            "typeOptions": {
+                "alt": "@name"
+            },
+            "visibility": "config.ENDPOINT_STATUS == 'CONNECTED'"
+        },
+        {
+            "name": "result",
+            "label": "Result",
+            "description": "Result of the connection to the service.",
+            "type": "label",
+            "showLabel": false,
+            "visibility": "config.ENDPOINT_STATUS == 'CONNECTED'"
+        },
+        {
+            "name" : "connectButton",
+            "label" : "Connect to Google Calendar",
+            "type" : "button",
+            "typeOptions": {
+                "color" : "primary",
+                "icon" : "zmdi-play",
+                "action" : "var scopes = 'https://www.googleapis.com/auth/userinfo.profile%20https://www.googleapis.com/auth/calendar%20https://www.googleapis.com/auth/calendar.readonly';\nvar redirectUri = (!!config.LOCAL ? config.BASE_SERVER_URL : (!config.ENDPOINT_CONFIG['clientType'] || config.ENDPOINT_CONFIG['clientType'] == 'single' ? config.SERVER_URL : config.BASE_SERVER_URL))+'/callback';\nvar url = 'https://accounts.google.com/o/oauth2/auth?access_type=offline&approval_prompt=force&client_id='+config.ENDPOINT_CONFIG['clientId']+'&redirect_uri='+redirectUri+'&response_type=code&scope='+scopes+'&state='+config.APP;\nvar win = window.open(url, 'Authorization page', 'toolbar=no,scrollbars=no,location=no,statusbar=no,menubar=no,resizable=0,width=500,height=600,left='+((screen.width/2)-250)+',top='+((screen.height/2)-250)+',');\n\nvar self = this;\n\nvar intervalFn = function() {\n\ttry {\n\t\tif (!win || !win.document) {\n\t\t\twindow.clearInterval(pollTimer);\n\t\t}else{\n\t\t\tif (win.document.URL.indexOf('/callback') != -1) {\n\t\t\t\twin.innerWidth = 100;\n\t\t\t\twin.innerHeight = 100;\n\t\t\t\twin.screenX = screen.width;\n\t\t\t\twin.screenY = screen.height;\n\t\t\t\twindow.clearInterval(pollTimer);\n\t\t\t\turl = win.document.URL;\n\t\t\t\tvar pos = url.indexOf('code=');\n\t\t\t\tif(pos > -1) {\n\t\t\t\t\tvar token = url.substring(pos + 5);\n\t\t\t\t\tconfig.code = token;\n\t\t\t\t\tconfig.redirectUri = redirectUri;\n\t\t\t\t\tif (utils.connectToService) {\n\t\t\t\t\t\tutils.connectToService();\n\t\t\t\t\t}\n\t\t\t\t}\n\t\t\t\ttry{win.close();}catch(e){}\n\t\t\t}\n\t\t}\n\t} catch(e) {}\n};\n\nvar pollTimer = window.setInterval(function() {intervalFn.apply(self)}, 500);\n"
+            },
+            "visibility" : "config.ENDPOINT_STATUS == 'DISCONNECTED'"
+        }
+    ]
+}
