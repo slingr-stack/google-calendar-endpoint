@@ -288,7 +288,7 @@ public class GoogleCalendarService {
         if(params != null) {
             for (String key : params.keys()) {
                 if ("timeMin".equals(key) || "timeMax".equals(key) || "updatedMin".equals(key)) {
-                    cList.set(key, new Date(params.longInteger(key)));
+                    cList.set(key, new DateTime(params.longInteger(key)));
                 } else {
                     cList.set(key, params.object(key));
                 }
