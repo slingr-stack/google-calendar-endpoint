@@ -287,7 +287,11 @@ public class GoogleCalendarService {
         final com.google.api.services.calendar.Calendar.Events.List cList = service.events().list(calendarId);
         if(params != null) {
             for (String key : params.keys()) {
-                cList.set(key, params.object(key));
+                if ("timeMin".equals(key) || "timeMax".equals(key) || "updatedMin".equals(key)) {
+                    cList.set(key, new Date(params.longInteger("key")));
+                } else {
+                    cList.set(key, params.object(key));
+                }
             }
         }
         return cList;
